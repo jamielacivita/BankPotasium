@@ -1,8 +1,7 @@
-import unittest
-
 import pytest
 
-import BPLog as BP
+from src import BPLog as BP
+
 
 @pytest.fixture
 def bplog():

@@ -5,7 +5,7 @@ log = logging.getLogger(__name__)
 def importcsv_lst():
     out_lst = []
     log.debug("In import CSV")
-    with open("230915_BP.csv") as f:
+    with open("../tests_data/230915_BP.csv") as f:
         bp_csv_reader_obj = csv.reader(f)
         for line in bp_csv_reader_obj:
             date = line[0]
