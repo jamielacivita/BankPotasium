@@ -7,34 +7,27 @@ import logging
 
 log = logging.getLogger(__name__)
 
-Measurement = namedtuple('Measurement', ['date', 'sys', 'dia'])
+Datapoint = namedtuple('Datapoint', ['date', 'sys', 'dia'])
 
 
 class BPLog:
     def __init__(self):
-        # self.measurements is the full list of measurements taken.
-        self.measurements: List[Measurement] = []
-        # self.measurements_daily_avg is a average of any set of measurements taken for a paticular day.
-        self.measurements_daily_avg: List[Measurement] = []
-        # self.measurements_sevenday_avg is the seven day rolling average measurement set.
-        self.measurements_sevenday_avg: List[Measurement] = []
 
-    def add_measurement(self, m: Measurement):
+        # the full list of measurements taken
+        self.measurements: List[Datapoint] = []
+
+        # an average of any set of measurements taken on a particular day
+        self.daily_avg: List[Datapoint] = []
+
+        # the seven day rolling average measurement set
+        self.seven_day_avg: List[Datapoint] = []
+
+    def add_measurement(self, m: Datapoint):
         if m.date != "Date":
             self.measurements.append(m)
 
-    def print_number_measurements(self):
-        print(len(self.measurements))
-
-    def print_daily_average(self):
-        mytable = PrettyTable(["Date", "SYS", "DIA"])
-        for m in self.measurements_daily_avg:
-            row = m.date, m.sys, m.dia
-            mytable.add_row(row)
-        print(mytable)
-
-    def set_measurements_daily_avg(self):
-        self.measurements_daily_avg = []
+    def calc_daily_avg(self):
+        self.daily_avg = []
         unique_dates = self._get_unique_dates()
 
         # iterate over the dates and for each date get the list of measurements
@@ -43,45 +36,52 @@ class BPLog:
 
             avg_sys, avg_dia = self._calc_averages(daily_measurements)
 
-            # append to measurements_daily_avg
-            self.measurements_daily_avg.append(Measurement(date, avg_sys, avg_dia))
+            # append to daily_avg
+            self.daily_avg.append(Datapoint(date, avg_sys, avg_dia))
 
-    def set_measurements_sevenday_avg(self):
-        self.measurements_sevenday_avg = []
+    def calc_seven_day_avg(self):
+        self.seven_day_avg = []
 
-        # interate over the daily average
+        # iterate over the daily average
         first_index = 0
-        last_index = len(self.measurements_daily_avg)
+        last_index = len(self.daily_avg)
         # print(f"first index : {first_index}")
         # print(f"last index : {last_index}")
 
         for start in range(first_index, last_index - 6):
-            # print(f"start : {start}")
-            # print(f"emd : {start + 7}")
 
-            res = []
-            res.extend(self.measurements_daily_avg[start:start + 7])
-            # print(res)
+            measurements = self.daily_avg[start:start + 7]
+            # print(measurements)
 
             sum_sys = 0
             sum_dia = 0
-            for m in res:
+            for m in measurements:
                 sum_sys += m.sys
                 sum_dia += m.dia
 
             avg_sys = sum_sys // 7
             avg_dia = sum_dia // 7
-            date = res[-1].date
+            date = measurements[-1].date
 
-            self.measurements_sevenday_avg.append(Measurement(date=date, sys=avg_sys, dia=avg_dia))
+            self.seven_day_avg.append(Datapoint(date=date, sys=avg_sys, dia=avg_dia))
 
-    def print_measurements_sevenday_avg(self):
-        mytable = PrettyTable(["Date", "SYS", "DIA"])
-        for m in self.measurements_sevenday_avg:
+    def print_number_measurements(self):
+        print(len(self.measurements))
+
+    def print_daily_average(self):
+        table = PrettyTable(["Date", "SYS", "DIA"])
+        for m in self.daily_avg:
             row = m.date, m.sys, m.dia
-            mytable.add_row(row)
+            table.add_row(row)
+        print(table)
+
+    def print_seven_day_avg(self):
+        table = PrettyTable(["Date", "SYS", "DIA"])
+        for m in self.seven_day_avg:
+            row = m.date, m.sys, m.dia
+            table.add_row(row)
         print("Seven Day Rolling Average")
-        print(mytable)
+        print(table)
 
     def _get_unique_dates(self) -> List[str]:
         """ get the unique list of dates
@@ -102,7 +102,7 @@ class BPLog:
         return daily_measurements
 
     @staticmethod
-    def _calc_averages(daily_measurements: List[Measurement]) -> Tuple[int, int]:
+    def _calc_averages(daily_measurements: List[Datapoint]) -> Tuple[int, int]:
         """
         calculate the average sys and dia from the list of measurements
         """
@@ -125,4 +125,4 @@ class BPLog:
         with open(file, 'r') as f:
             bp_csv_reader_obj = csv.reader(f)
             for line in bp_csv_reader_obj:
-                self.add_measurement(Measurement(date=line[0], sys=line[1], dia=line[2]))
+                self.add_measurement(Datapoint(date=line[0], sys=line[1], dia=line[2]))
