@@ -1,6 +1,11 @@
 from typing import List, Tuple
 from collections import namedtuple
+from pathlib import Path
 from prettytable import PrettyTable
+import csv
+import logging
+
+log = logging.getLogger(__name__)
 
 Measurement = namedtuple('Measurement', ['date', 'sys', 'dia'])
 
@@ -109,3 +114,15 @@ class BPLog:
         avg_sys = sum_sys // len(daily_measurements)
         avg_dia = sum_dia // len(daily_measurements)
         return avg_sys, avg_dia
+
+    def import_from_csv(self, file: Path | str):
+        if isinstance(file, str):
+            file = Path(file)
+        if not file.exists():
+            raise FileNotFoundError(f'File {file} not found.')
+        self.measurements = []
+        log.debug("In import CSV")
+        with open(file, 'r') as f:
+            bp_csv_reader_obj = csv.reader(f)
+            for line in bp_csv_reader_obj:
+                self.add_measurement(Measurement(date=line[0], sys=line[1], dia=line[2]))
