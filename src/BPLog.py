@@ -74,12 +74,13 @@ class BPLog:
         print("Seven Day Rolling Average")
         print(mytable)
 
-    def _get_unique_dates(self) -> Set[str]:
+    def _get_unique_dates(self) -> List[str]:
         """ get the unique list of dates
         """
-        dates = set()
+        dates = []
         for m in self.measurements:
-            dates.add(m.date)
+            if m.date not in dates:
+                dates.append(m.date)
         return dates
 
     def _get_daily_measurements(self, date):
