@@ -1,3 +1,6 @@
+import csv
+from pathlib import Path
+
 import pytest
 
 from src import BPLog as BP
@@ -111,3 +114,20 @@ def test_set_measurements_sevenday_avg(bplog):
     bplog.set_measurements_daily_avg()
     bplog.set_measurements_sevenday_avg()
     assert bplog.measurements_sevenday_avg == expected
+
+
+def test_import_from_cvs(bplog):
+    test_file = Path('test_file_import_csv.csv')
+    with open(test_file, 'w') as file_obj:
+        writer = csv.writer(file_obj, lineterminator='\n')
+        writer.writerow(('1', '1', '1'))
+        writer.writerow(('2', '2', '2'))
+
+    bplog.import_from_csv(test_file)
+    expected = [
+        Measurement(date='1', sys='1', dia='1'),
+        Measurement(date='2', sys='2', dia='2'),
+    ]
+    assert bplog.measurements == expected
+
+    test_file.unlink()
