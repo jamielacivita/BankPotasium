@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Set
 from collections import namedtuple
 from prettytable import PrettyTable
 import math
@@ -17,12 +17,9 @@ class BPLog:
     def add_measurement(self, m: Measurement):
         if m.date != "Date":
             self.measurements.append(m)
-        return None
-
 
     def print_number_measurements(self):
         print(len(self.measurements))
-        return None
 
     def print_daily_average(self):
         mytable = PrettyTable(["Date", "SYS", "DIA"])
@@ -31,16 +28,10 @@ class BPLog:
         print(mytable)
 
     def set_measurements_daily_avg(self):
-        # get the unique list of dates
-        unique_dates_lst = []
-        for m in self.measurements:
-            if m.date not in unique_dates_lst:
-                unique_dates_lst.append(m.date)
-            else:
-                pass
-        # iterate over the dates and for each date get the list of measurements
+        unique_dates = self._get_unique_dates()
 
-        for date in unique_dates_lst:
+        # iterate over the dates and for each date get the list of measurements
+        for date in unique_dates:
             daily_measurements_lst = []
             for m in self.measurements:
                 if m.date == date:
@@ -95,3 +86,11 @@ class BPLog:
             mytable.add_row(row)
         print("Seven Day Rolling Average")
         print(mytable)
+
+    def _get_unique_dates(self) -> Set[str]:
+        """ get the unique list of dates
+        """
+        dates = set()
+        for m in self.measurements:
+            dates.add(m.date)
+        return dates
