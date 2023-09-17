@@ -1,9 +1,9 @@
-from typing import List, Set, Tuple
+from typing import List, Tuple
 from collections import namedtuple
 from prettytable import PrettyTable
-import math
 
 Measurement = namedtuple('Measurement', ['date', 'sys', 'dia'])
+
 
 class BPLog:
     def __init__(self):
@@ -50,12 +50,12 @@ class BPLog:
         # print(f"first index : {first_index}")
         # print(f"last index : {last_index}")
 
-        for start in range(first_index, last_index-6):
+        for start in range(first_index, last_index - 6):
             # print(f"start : {start}")
             # print(f"emd : {start + 7}")
 
             res = []
-            res.extend(self.measurements_daily_avg[start:start+7])
+            res.extend(self.measurements_daily_avg[start:start + 7])
             # print(res)
 
             sum_sys = 0
@@ -88,13 +88,16 @@ class BPLog:
         return dates
 
     def _get_daily_measurements(self, date):
+        """ get the list of measurements for a date
+        """
         daily_measurements = []
         for m in self.measurements:
             if m.date == date:
                 daily_measurements.append(m)
         return daily_measurements
 
-    def _calc_averages(self, daily_measurements: List[Measurement]) -> Tuple[int, int]:
+    @staticmethod
+    def _calc_averages(daily_measurements: List[Measurement]) -> Tuple[int, int]:
         """
         calculate the average sys and dia from the list of measurements
         """
