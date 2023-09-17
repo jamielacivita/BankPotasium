@@ -66,3 +66,20 @@ def test_calc_averages(bplog):
     ]
     expected = 130, 90
     assert bplog._calc_averages(daily_measurements) == expected
+
+
+def test_set_measurements_daily_avg(bplog):
+    bplog.add_measurement(Measurement(date="230901", sys="1", dia="1"))
+    expected = [["230901", 1, 1]]
+    bplog.set_measurements_daily_avg()
+    assert bplog.measurements_daily_avg == expected
+
+    bplog.add_measurement(Measurement(date="230901", sys="2", dia="2"))
+    expected = [["230901", 1, 1]]
+    bplog.set_measurements_daily_avg()
+    assert bplog.measurements_daily_avg == expected
+
+    bplog.add_measurement(Measurement(date="230901", sys="3", dia="3"))
+    expected = [["230901", 2, 2]]
+    bplog.set_measurements_daily_avg()
+    assert bplog.measurements_daily_avg == expected
