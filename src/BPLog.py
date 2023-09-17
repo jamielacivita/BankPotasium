@@ -28,6 +28,7 @@ class BPLog:
         print(mytable)
 
     def set_measurements_daily_avg(self):
+        self.measurements_daily_avg = []
         unique_dates = self._get_unique_dates()
 
         # iterate over the dates and for each date get the list of measurements
@@ -36,7 +37,7 @@ class BPLog:
 
             avg_sys, avg_dia = self._calc_averages(daily_measurements)
 
-        # append to measurements_daily_avg
+            # append to measurements_daily_avg
             self.measurements_daily_avg.append([date, avg_sys, avg_dia])
 
     def set_measurements_sevenday_avg(self):
