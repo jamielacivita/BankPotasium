@@ -70,17 +70,17 @@ def test_calc_averages(bplog):
 
 def test_set_measurements_daily_avg(bplog):
     bplog.add_measurement(Measurement(date="230901", sys="1", dia="1"))
-    expected = [["230901", 1, 1]]
+    expected = [Measurement("230901", 1, 1)]
     bplog.set_measurements_daily_avg()
     assert bplog.measurements_daily_avg == expected
 
     bplog.add_measurement(Measurement(date="230901", sys="2", dia="2"))
-    expected = [["230901", 1, 1]]
+    expected = [Measurement("230901", 1, 1)]
     bplog.set_measurements_daily_avg()
     assert bplog.measurements_daily_avg == expected
 
     bplog.add_measurement(Measurement(date="230901", sys="3", dia="3"))
-    expected = [["230901", 2, 2]]
+    expected = [Measurement("230901", 2, 2)]
     bplog.set_measurements_daily_avg()
     assert bplog.measurements_daily_avg == expected
 
@@ -97,9 +97,9 @@ def test_set_measurements_sevenday_avg(bplog):
     bplog.add_measurement(Measurement(date="230909", sys="9", dia="9"))
 
     expected = [
-        ["230907", 4, 4],
-        ["230908", 5, 5],
-        ["230909", 6, 6],
+        Measurement(date="230907", sys=4, dia=4),
+        Measurement(date="230908", sys=5, dia=5),
+        Measurement(date="230909", sys=6, dia=6),
     ]
 
     bplog.set_measurements_daily_avg()

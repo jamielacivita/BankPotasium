@@ -10,9 +10,9 @@ class BPLog:
         # self.measurements is the full list of measurements taken.
         self.measurements: List[Measurement] = []
         # self.measurements_daily_avg is a average of any set of measurements taken for a paticular day.
-        self.measurements_daily_avg = []
+        self.measurements_daily_avg: List[Measurement] = []
         # self.measurements_sevenday_avg is the seven day rolling average measurement set.
-        self.measurements_sevenday_avg = []
+        self.measurements_sevenday_avg: List[Measurement] = []
 
     def add_measurement(self, m: Measurement):
         if m.date != "Date":
@@ -23,7 +23,8 @@ class BPLog:
 
     def print_daily_average(self):
         mytable = PrettyTable(["Date", "SYS", "DIA"])
-        for row in self.measurements_daily_avg:
+        for m in self.measurements_daily_avg:
+            row = m.date, m.sys, m.dia
             mytable.add_row(row)
         print(mytable)
 
@@ -38,7 +39,7 @@ class BPLog:
             avg_sys, avg_dia = self._calc_averages(daily_measurements)
 
             # append to measurements_daily_avg
-            self.measurements_daily_avg.append([date, avg_sys, avg_dia])
+            self.measurements_daily_avg.append(Measurement(date, avg_sys, avg_dia))
 
     def set_measurements_sevenday_avg(self):
         self.measurements_sevenday_avg = []
@@ -60,18 +61,19 @@ class BPLog:
             sum_sys = 0
             sum_dia = 0
             for m in res:
-                sum_sys = sum_sys + m[1]
-                sum_dia = sum_dia + m[2]
+                sum_sys += m.sys
+                sum_dia += m.dia
 
-            avg_sys = math.trunc(sum_sys / 7)
-            avg_dia = math.trunc(sum_dia / 7)
-            date = res[-1][0]
+            avg_sys = sum_sys // 7
+            avg_dia = sum_dia // 7
+            date = res[-1].date
 
-            self.measurements_sevenday_avg.append([date, avg_sys, avg_dia])
+            self.measurements_sevenday_avg.append(Measurement(date=date, sys=avg_sys, dia=avg_dia))
 
     def print_measurements_sevenday_avg(self):
         mytable = PrettyTable(["Date", "SYS", "DIA"])
-        for row in self.measurements_sevenday_avg:
+        for m in self.measurements_sevenday_avg:
+            row = m.date, m.sys, m.dia
             mytable.add_row(row)
         print("Seven Day Rolling Average")
         print(mytable)
