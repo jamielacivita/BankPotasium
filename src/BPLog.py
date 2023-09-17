@@ -32,21 +32,16 @@ class BPLog:
 
         # iterate over the dates and for each date get the list of measurements
         for date in unique_dates:
-            daily_measurements_lst = []
-            for m in self.measurements:
-                if m.date == date:
-                    daily_measurements_lst.append(m)
-                else:
-                    pass
+            daily_measurements = self._get_daily_measurements(date)
 
         # calculate the average sys and dia from that list
             sum_sys = 0
             sum_dia = 0
-            for m in daily_measurements_lst:
+            for m in daily_measurements:
                 sum_sys = sum_sys + int(m.sys)
                 sum_dia = sum_dia + int(m.dia)
-            avg_sys = sum_sys / len(daily_measurements_lst)
-            avg_dia = sum_dia / len(daily_measurements_lst)
+            avg_sys = sum_sys / len(daily_measurements)
+            avg_dia = sum_dia / len(daily_measurements)
             avg_sys = math.trunc(avg_sys)
             avg_dia = math.trunc(avg_dia)
 
@@ -94,3 +89,10 @@ class BPLog:
         for m in self.measurements:
             dates.add(m.date)
         return dates
+
+    def _get_daily_measurements(self, date):
+        daily_measurements = []
+        for m in self.measurements:
+            if m.date == date:
+                daily_measurements.append(m)
+        return daily_measurements
