@@ -1,4 +1,4 @@
-from typing import List, Set
+from typing import List, Set, Tuple
 from collections import namedtuple
 from prettytable import PrettyTable
 import math
@@ -34,16 +34,7 @@ class BPLog:
         for date in unique_dates:
             daily_measurements = self._get_daily_measurements(date)
 
-        # calculate the average sys and dia from that list
-            sum_sys = 0
-            sum_dia = 0
-            for m in daily_measurements:
-                sum_sys = sum_sys + int(m.sys)
-                sum_dia = sum_dia + int(m.dia)
-            avg_sys = sum_sys / len(daily_measurements)
-            avg_dia = sum_dia / len(daily_measurements)
-            avg_sys = math.trunc(avg_sys)
-            avg_dia = math.trunc(avg_dia)
+            avg_sys, avg_dia = self._calc_averages(daily_measurements)
 
         # append to measurements_daily_avg
             self.measurements_daily_avg.append([date, avg_sys, avg_dia])
@@ -96,3 +87,16 @@ class BPLog:
             if m.date == date:
                 daily_measurements.append(m)
         return daily_measurements
+
+    def _calc_averages(self, daily_measurements: List[Measurement]) -> Tuple[int, int]:
+        """
+        calculate the average sys and dia from the list of measurements
+        """
+        sum_sys = 0
+        sum_dia = 0
+        for m in daily_measurements:
+            sum_sys += int(m.sys)
+            sum_dia += int(m.dia)
+        avg_sys = sum_sys // len(daily_measurements)
+        avg_dia = sum_dia // len(daily_measurements)
+        return avg_sys, avg_dia

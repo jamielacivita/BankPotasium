@@ -57,3 +57,12 @@ def test_get_daily_measurements(bplog):
         Measurement(date="230916", sys="3", dia="3"),
     ]
     assert bplog._get_daily_measurements(date) == expected
+
+
+def test_calc_averages(bplog):
+    daily_measurements = [
+        Measurement(date="230915", sys="120", dia="80"),
+        Measurement(date="230915", sys="140", dia="100"),
+    ]
+    expected = 130, 90
+    assert bplog._calc_averages(daily_measurements) == expected
