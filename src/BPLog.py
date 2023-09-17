@@ -41,6 +41,8 @@ class BPLog:
             self.measurements_daily_avg.append([date, avg_sys, avg_dia])
 
     def set_measurements_sevenday_avg(self):
+        self.measurements_sevenday_avg = []
+
         # interate over the daily average
         first_index = 0
         last_index = len(self.measurements_daily_avg)
