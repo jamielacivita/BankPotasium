@@ -92,6 +92,12 @@ def test_set_measurements_sevenday_avg(bplog):
     bplog.add_measurement(Measurement(date="230904", sys="4", dia="4"))
     bplog.add_measurement(Measurement(date="230905", sys="5", dia="5"))
     bplog.add_measurement(Measurement(date="230906", sys="6", dia="6"))
+
+    expected = []
+    bplog.set_measurements_daily_avg()
+    bplog.set_measurements_sevenday_avg()
+    assert bplog.measurements_sevenday_avg == expected
+
     bplog.add_measurement(Measurement(date="230907", sys="7", dia="7"))
     bplog.add_measurement(Measurement(date="230908", sys="8", dia="8"))
     bplog.add_measurement(Measurement(date="230909", sys="9", dia="9"))
@@ -104,5 +110,4 @@ def test_set_measurements_sevenday_avg(bplog):
 
     bplog.set_measurements_daily_avg()
     bplog.set_measurements_sevenday_avg()
-
     assert bplog.measurements_sevenday_avg == expected
